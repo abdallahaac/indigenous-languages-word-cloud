@@ -607,7 +607,68 @@
 			var initialX;
 			var draggableCircle = document.getElementById("draggable-circle");
 			var scrollbar = document.getElementById("scrollbar");
+			var lastPercentage = -40; // Initialize with the initial percentage
 
+			// Function to update the Word Cloud and circle position based on the percentage
+			function updateWordCloud(percentage) {
+				series.data.clear(); // Clear existing data
+
+				// Filter the data and add only languages with the percentage equal or lesser to 'percentage'
+				var newData = data.filter((item) => item.percentage <= percentage);
+
+				// Update the Word Cloud with the filtered data
+				series.data.setAll(newData);
+			}
+
+			// Function to handle keyboard events for the draggable circle
+			document.addEventListener("keydown", (e) => {
+				if (e.key === "Enter") {
+					// Calculate the percentage based on the specified range
+					var rangeMin = -40;
+					var rangeMax = 40;
+
+					// Assuming you want to use the lastPercentage value for the Enter key
+					var newPercentage = lastPercentage;
+
+					console.log("Current Value: " + newPercentage.toFixed(2) + "%");
+					updateWordCloud(newPercentage); // Update the Word Cloud
+
+					// Calculate the new position of the circle
+					var scrollbarWidth = scrollbar.clientWidth;
+					var circleWidth = draggableCircle.clientWidth;
+					var adjustedWidth = scrollbarWidth - circleWidth;
+					var newLeft =
+						((newPercentage - rangeMin) / (rangeMax - rangeMin)) *
+						adjustedWidth;
+					draggableCircle.style.left = newLeft + "px";
+				}
+			});
+
+			// Function to handle label click or Enter keypress
+			function handleLabelClickOrEnter(event) {
+				// Get the text content of the clicked label (e.g., "-40%")
+				var labelValue = event.target.textContent.trim();
+
+				// Extract the percentage value (e.g., -40)
+				var percentage = parseFloat(labelValue);
+
+				if (!isNaN(percentage)) {
+					// Call the updateWordCloud function with the extracted percentage
+					updateWordCloud(percentage);
+					lastPercentage = percentage; // Update the last percentage value
+				}
+			}
+
+			// Add event listeners to the scrollbar labels
+			scrollbarLabels.forEach(function (label) {
+				label.addEventListener("keydown", function (event) {
+					if (event.key === "Enter") {
+						handleLabelClickOrEnter(event);
+					}
+				});
+			});
+
+			// Add event listeners for dragging the circle
 			draggableCircle.addEventListener("mousedown", (e) => {
 				isDragging = true;
 				initialX = e.clientX - draggableCircle.getBoundingClientRect().left;
@@ -633,57 +694,6 @@
 				// Ensure the percentage stays within the specified range
 				percentage = Math.max(rangeMin, Math.min(rangeMax, percentage));
 
-				console.log("Current Value: " + percentage.toFixed(2) + "%");
-				updateWordCloud(percentage); // Update the Word Cloud
-
-				// Calculate the new position of the circle
-				var newLeft =
-					((percentage - rangeMin) / (rangeMax - rangeMin)) * adjustedWidth;
-				draggableCircle.style.left = newLeft + "px";
-				document.addEventListener("mouseup", () => {
-					isDragging = false;
-				});
-			});
-
-			document.addEventListener("mouseup", () => {
-				isDragging = false;
-			});
-
-			// Function to update the Word Cloud and circle position based on the percentage
-			function updateWordCloud(percentage) {
-				series.data.clear(); // Clear existing data
-
-				// Filter the data and add only languages with the percentage equal or lesser to 'percentage'
-				var newData = data.filter((item) => item.percentage <= percentage);
-
-				// Update the Word Cloud with the filtered data
-				series.data.setAll(newData);
-			}
-
-			// Function to handle mouse down and mouse up events for the draggable circle
-			draggableCircle.addEventListener("mousedown", function () {
-				isDragging = true;
-			});
-
-			document.addEventListener("mousemove", (e) => {
-				if (!isDragging) return;
-				e.preventDefault();
-
-				var newX =
-					e.clientX - initialX - scrollbar.getBoundingClientRect().left;
-				var scrollbarWidth = scrollbar.clientWidth;
-				var circleWidth = draggableCircle.clientWidth;
-
-				// Calculate the percentage based on the specified range
-				var rangeMin = -40;
-				var rangeMax = 40;
-				var adjustedWidth = scrollbarWidth - circleWidth;
-				var percentage =
-					(newX / adjustedWidth) * (rangeMax - rangeMin) + rangeMin;
-
-				// Ensure the percentage stays within the specified range
-				percentage = Math.max(rangeMin, Math.min(rangeMax, percentage));
-
 				// Calculate the new position of the circle
 				var newLeft =
 					((percentage - rangeMin) / (rangeMax - rangeMin)) * adjustedWidth;
@@ -692,37 +702,9 @@
 				// Update the Word Cloud when dragging is finished
 				document.addEventListener("mouseup", () => {
 					isDragging = false;
-					console.log("Current Value: " + percentage.toFixed(2) + "%");
-					updateWordCloud(percentage); // Update the Word Cloud
+					console.log("Current Value: " + lastPercentage.toFixed(2) + "%");
 				});
-			});
-
-			document.addEventListener("mouseup", () => {
-				isDragging = false;
-			});
-
-			// Function to handle label click or Enter keypress
-			function handleLabelClickOrEnter(event) {
-				// Get the text content of the clicked label (e.g., "-40%")
-				var labelValue = event.target.textContent.trim();
-
-				// Extract the percentage value (e.g., -40)
-				var percentage = parseFloat(labelValue);
-
-				if (!isNaN(percentage)) {
-					// Call the updateWordCloud function with the extracted percentage
-					updateWordCloud(percentage);
-				}
-			}
-
-			// Add event listeners to the scrollbar labels
-			scrollbarLabels.forEach(function (label) {
-				label.addEventListener("click", handleLabelClickOrEnter);
-				label.addEventListener("keydown", function (event) {
-					if (event.key === "Enter") {
-						handleLabelClickOrEnter(event);
-					}
-				});
+				updateWordCloud(percentage); // Update the Word Cloud using the last selected percentage
 			});
 
 			// Initial setup
