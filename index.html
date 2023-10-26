@@ -611,13 +611,15 @@
 
 			// Function to update the Word Cloud and circle position based on the percentage
 			function updateWordCloud(percentage) {
-				series.data.clear(); // Clear existing data
+				if (percentage !== undefined) {
+					series.data.clear(); // Clear existing data
 
-				// Filter the data and add only languages with the percentage equal or lesser to 'percentage'
-				var newData = data.filter((item) => item.percentage <= percentage);
+					// Filter the data and add only languages with the percentage equal or lesser to 'percentage'
+					var newData = data.filter((item) => item.percentage <= percentage);
 
-				// Update the Word Cloud with the filtered data
-				series.data.setAll(newData);
+					// Update the Word Cloud with the filtered data
+					series.data.setAll(newData);
+				}
 			}
 
 			// Function to handle keyboard events for the draggable circle
@@ -631,7 +633,7 @@
 					var newPercentage = lastPercentage;
 
 					console.log("Current Value: " + newPercentage.toFixed(2) + "%");
-					updateWordCloud(newPercentage); // Update the Word Cloud
+					// Call the updateWordCloud function with the extracted percentage
 
 					// Calculate the new position of the circle
 					var scrollbarWidth = scrollbar.clientWidth;
@@ -700,15 +702,17 @@
 				draggableCircle.style.left = newLeft + "px";
 
 				// Update the Word Cloud when dragging is finished
-				document.addEventListener("mouseup", () => {
+				document.addEventListener("mouseup", function mouseupListener() {
 					isDragging = false;
 					console.log("Current Value: " + lastPercentage.toFixed(2) + "%");
+
+					// Remove the mousemove and mouseup listeners
+					document.removeEventListener("mousemove", mousemoveListener);
+					document.removeEventListener("mouseup", mouseupListener);
 				});
+
 				updateWordCloud(percentage); // Update the Word Cloud using the last selected percentage
 			});
-
-			// Initial setup
-			updateWordCloud(-40);
 		</script>
 	</body>
 </html>
