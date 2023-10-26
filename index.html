@@ -649,7 +649,7 @@
 			];
 
 			// Function to update the Word Cloud and circle position based on the percentage
-			function updateWordCloudAndCircle(percentage) {
+			function updateWordCloud(percentage) {
 				series.data.clear(); // Clear existing data
 
 				// Filter the data and add only languages with the percentage equal or lesser to 'percentage'
@@ -694,7 +694,7 @@
 
 				if (!isNaN(percentage)) {
 					// Call the updateWordCloudAndCircle function with the extracted percentage
-					updateWordCloudAndCircle(percentage);
+					updateWordCloud(percentage);
 				}
 			}
 
@@ -709,7 +709,7 @@
 			});
 
 			// Initial setup
-			updateWordCloudAndCircle(-40); //
+			updateWordCloud(-40); //
 		</script>
 	</body>
 </html>
