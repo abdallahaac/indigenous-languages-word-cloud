@@ -98,7 +98,7 @@
 				bottom: 50px;
 				right: 0;
 				margin: 35px;
-				height: 200px;
+				height: 300px;
 				width: 200px;
 				border-radius: 6px;
 				box-shadow: #cccccc2c 0px 3px 5px 5px;
@@ -114,6 +114,9 @@
 
 			.popup-category {
 				margin-bottom: 30px;
+			}
+			.popup > div {
+				margin: 20px;
 			}
 
 			.popup-percentage {
@@ -161,6 +164,11 @@
 			<div id="popup" class="popup" tabindex="0">
 				<div id="popupCategory" class="popup-category" tabindex="0"></div>
 				<div id="popupPercentage" class="popup-percentage" tabindex="0"></div>
+				<div
+					id="popupNumOfSpeakers"
+					class="popupNumOfSpeakers"
+					tabindex="0"
+				></div>
 				<div id="popup-close" class="popup-close" tabindex="0">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -251,21 +259,26 @@
 			series.labels.template.events.on("click", (ev) => {
 				const category = ev.target.dataItem.dataContext.category;
 				const percentage = ev.target.dataItem.dataContext.percentage;
+				const numOfSpeakers = ev.target.dataItem.dataContext.weight;
 				const popupClose = document.getElementById("popup-close");
 
 				// Get a reference to the popup div and its child elements
 				const popup = document.getElementById("popup");
 				const popupCategory = document.getElementById("popupCategory");
 				const popupPercentage = document.getElementById("popupPercentage");
+				const popupNumOfSpeakers =
+					document.getElementById("popupNumOfSpeakers");
 
 				// Set the content of the popup
 				popupCategory.textContent = `Language: ${category}`;
 				popupPercentage.textContent = `Percentage: ${percentage}%`;
+				popupNumOfSpeakers.textContent = `Number of Speakers: ${numOfSpeakers}`;
 				currentActiveElement = document.activeElement;
 
 				// Check if ev.target.dom is defined before accessing it
 				if (ev.target.dataItem.dataContext) {
 					console.log("working");
+					console.log(numOfSpeakers);
 
 					// Calculate the position relative to the clicked word
 					const x = ev.target.pixelX;
