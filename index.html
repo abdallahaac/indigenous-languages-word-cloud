@@ -194,6 +194,18 @@
 				})
 			);
 
+			var title = container.children.push(
+				am5.Label.new(root, {
+					text: "This is a description of the interaction",
+					fontSize: 15,
+					fontStyle: "italic",
+					fill: am5.color(0x898989),
+					x: am5.percent(50),
+					y: am5.percent(3),
+					centerX: am5.percent(50),
+					focusable: true,
+				})
+			);
 			// Add series
 			// https://www.amcharts.com/docs/v5/charts/word-cloud/
 			var series = container.children.push(
@@ -209,6 +221,7 @@
 					},
 				})
 			);
+			// Add chart title
 
 			// Set up heat rules
 			// https://www.amcharts.com/docs/v5/charts/word-cloud/#Via_heat_rules
