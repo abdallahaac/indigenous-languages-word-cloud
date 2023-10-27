@@ -58,13 +58,15 @@
 			#draggable-circle {
 				width: 23px;
 				height: 23px;
-				background-color: rgb(211, 210, 210);
+				background-color: rgb(185, 185, 185);
+				border: 3px solid rgb(218, 218, 218);
+
 				transform: translateY(-7px);
 				border-radius: 50%;
 				cursor: ew-resize;
 				user-drag: none;
 				position: absolute;
-				border: 3px solid white;
+
 				animation: ease-in;
 				transition: all 0s;
 				margin-right: 10px;
@@ -83,27 +85,43 @@
 				font-family: "Arial";
 			}
 			#draggable-circle:hover {
-				background-color: rgb(152, 152, 152);
+				background-color: rgb(185, 185, 185);
+				border: 3px solid rgb(218, 218, 218);
+				transition: all ease-in 200ms;
 			}
 			.popup {
 				position: absolute;
 				font-family: Arial, Helvetica, sans-serif;
 				display: none;
 				z-index: 10;
-				background-color: #fff;
+				background-color: rgba(255, 255, 255, 0.525);
+
 				border: 1px solid #cccccc5b;
 				padding: 30px;
 				z-index: 1000;
-				transform: translateY(30px);
-				bottom: 50px;
-				right: 0;
+				transform: translateY(-60px);
+
+				top: 50px;
+				left: 0;
 				margin: 35px;
-				height: 300px;
-				width: 200px;
+				height: 250px;
+				width: 250px;
 				border-radius: 6px;
 				box-shadow: #cccccc2c 0px 3px 5px 5px;
 				padding: 50px 20px 50px 20px;
-				left: 0;
+				background-color: #f3eff7;
+			}
+
+			@media only screen and (min-width: 1600px) {
+				.popup {
+					transform: translateY(545px);
+					margin-left: 70px;
+					background-color: rgba(255, 255, 255, 0.525);
+				}
+			}
+
+			.popup-category {
+				font-weight: bold;
 			}
 			.popup-close {
 				position: inherit;
@@ -115,12 +133,11 @@
 			.popup-category {
 				margin-bottom: 30px;
 			}
-			.popup > div {
+			.popup > div,
+			span {
 				margin: 20px;
 			}
 
-			.popup-percentage {
-			}
 			* {
 				margin: 0;
 				padding: 0;
@@ -163,7 +180,11 @@
 			<div id="chartdiv" style="width: 100%; height: 600px; z-index: 100"></div>
 			<div id="popup" class="popup" tabindex="0">
 				<div id="popupCategory" class="popup-category" tabindex="0"></div>
-				<div id="popupPercentage" class="popup-percentage" tabindex="0"></div>
+				<span style="display: flex" tabindex="0"
+					>Percentage:
+					<div id="popupPercentage" class="popup-percentage"></div
+				></span>
+
 				<div
 					id="popupNumOfSpeakers"
 					class="popupNumOfSpeakers"
@@ -204,8 +225,8 @@
 
 			var title = container.children.push(
 				am5.Label.new(root, {
-					text: "This is a description of the interaction",
-					fontSize: 15,
+					text: "Number of Indigenous people able to speak an Indigenous language in 2021 and percentage change from 2016",
+					fontSize: 13,
 					fontStyle: "italic",
 					fill: am5.color(0x898989),
 					x: am5.percent(50),
@@ -262,6 +283,15 @@
 				const numOfSpeakers = ev.target.dataItem.dataContext.weight;
 				const popupClose = document.getElementById("popup-close");
 
+				const langaugeColorR =
+					ev.target.dataItem.dataContext.labelSettings.fill.r;
+
+				const langaugeColorG =
+					ev.target.dataItem.dataContext.labelSettings.fill.g;
+
+				const langaugeColorB =
+					ev.target.dataItem.dataContext.labelSettings.fill.b;
+
 				// Get a reference to the popup div and its child elements
 				const popup = document.getElementById("popup");
 				const popupCategory = document.getElementById("popupCategory");
@@ -270,15 +300,14 @@
 					document.getElementById("popupNumOfSpeakers");
 
 				// Set the content of the popup
-				popupCategory.textContent = `Language: ${category}`;
-				popupPercentage.textContent = `Percentage: ${percentage}%`;
+				popupCategory.textContent = `${category}`;
+				popupPercentage.textContent = ` ${percentage}%`;
 				popupNumOfSpeakers.textContent = `Number of Speakers: ${numOfSpeakers}`;
 				currentActiveElement = document.activeElement;
 
 				// Check if ev.target.dom is defined before accessing it
 				if (ev.target.dataItem.dataContext) {
-					console.log("working");
-					console.log(numOfSpeakers);
+					console.log(ev.target.dataItem.dataContext.labelSettings.fill.r);
 
 					// Calculate the position relative to the clicked word
 					const x = ev.target.pixelX;
@@ -287,6 +316,7 @@
 					// Position the popup using CSS transforms
 					popup.style.transform = `translate(${x}px, ${y}px)`;
 
+					popupPercentage.style.color = `rgb(${langaugeColorR},${langaugeColorG},${langaugeColorB})`;
 					// Set the display property before showing the popup
 					popup.style.display = "block";
 					popup.style.zIndex = "1000";
@@ -755,8 +785,6 @@
 					console.log("Current Value: " + lastPercentage.toFixed(2) + "%");
 
 					// Remove the mousemove and mouseup listeners
-					document.removeEventListener("mousemove", mousemoveListener);
-					document.removeEventListener("mouseup", mouseupListener);
 				});
 
 				updateWordCloud(percentage); // Update the Word Cloud using the last selected percentage
