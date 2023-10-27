@@ -15,11 +15,10 @@
 				display: flex;
 				justify-content: center; /* Center horizontally */
 				align-items: center; /* Center vertically */
-				width: 900px;
+				width: 100%;
 				height: 50px;
 				overflow: hidden;
 				position: relative;
-				transform: translateX(50%);
 			}
 
 			#scrollbar {
@@ -124,7 +123,6 @@
 			}
 
 			.slider {
-				position: absolute;
 				top: 0;
 				left: 0;
 				width: 100%;
@@ -134,8 +132,8 @@
 			}
 		</style>
 	</head>
-	<body>
-		<div class="slider">
+	<body class="slider">
+		<div>
 			<header>
 				<nav></nav>
 				<section></section>
@@ -156,7 +154,7 @@
 					</div>
 				</div>
 			</div>
-			<div id="chartdiv" style="width: 100%; height: 900px; z-index: 100"></div>
+			<div id="chartdiv" style="width: 100%; height: 700px; z-index: 100"></div>
 			<div id="popup" class="popup" tabindex="0">
 				<div id="popupCategory" class="popup-category" tabindex="0"></div>
 				<div id="popupPercentage" class="popup-percentage" tabindex="0"></div>
