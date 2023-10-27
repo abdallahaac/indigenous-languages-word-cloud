@@ -516,13 +516,13 @@ function handleLabelClick(event) {
 		draggableCircle.style.left = newLeft + "px";
 
 		// Wait for a small time to ensure the position is updated before reapplying the transition
-		setTimeout(() => {
-			// Reapply the transition for smooth animation
-			draggableCircle.style.transition = "left 0.3s ease";
+		// setTimeout(() => {
+		// 	// Reapply the transition for smooth animation
+		// 	draggableCircle.style.transition = "left 0.3s ease";
 
-			// Set the animation flag back to false
-			isAnimating = false;
-		}, 10);
+		// 	// Set the animation flag back to false
+		// 	isAnimating = false;
+		// }, 10);
 
 		// Update the Word Cloud using the selected percentage
 		updateWordCloud(percentage);
