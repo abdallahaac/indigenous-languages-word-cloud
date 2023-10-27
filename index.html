@@ -94,9 +94,8 @@
 				font-family: Arial, Helvetica, sans-serif;
 				display: none;
 				z-index: 10;
-				background-color: rgba(255, 255, 255, 0.525);
+				background-color: rgba(255, 255, 255, 0.274);
 
-				border: 1px solid #cccccc5b;
 				padding: 30px;
 				z-index: 1000;
 				transform: translateY(-60px);
@@ -107,7 +106,7 @@
 				height: 250px;
 				width: 250px;
 				border-radius: 6px;
-				box-shadow: #cccccc2c 0px 3px 5px 5px;
+				box-shadow: #cccccc04 0px 3px 5px 5px;
 				padding: 50px 20px 50px 20px;
 				background-color: #f3eff7;
 			}
@@ -116,7 +115,13 @@
 				.popup {
 					transform: translateY(545px);
 					margin-left: 70px;
-					background-color: rgba(255, 255, 255, 0.525);
+					background-color: rgba(255, 255, 255, 0.274);
+				}
+			}
+			@media only screen and (max-width: 1600px) {
+				.popup {
+					margin-left: 70px;
+					background-color: rgba(255, 255, 255, 0.274);
 				}
 			}
 
@@ -149,7 +154,7 @@
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background: linear-gradient(to left, #ffffff, #ede9f0);
+				background: linear-gradient(to left, #f19946, #db9d3f);
 				z-index: -100;
 			}
 		</style>
@@ -179,17 +184,8 @@
 			</div>
 			<div id="chartdiv" style="width: 100%; height: 600px; z-index: 100"></div>
 			<div id="popup" class="popup" tabindex="0">
-				<div id="popupCategory" class="popup-category" tabindex="0"></div>
-				<span style="display: flex" tabindex="0"
-					>Percentage:
-					<div id="popupPercentage" class="popup-percentage"></div
-				></span>
+				<div id="popup-description" style="display: flex"></div>
 
-				<div
-					id="popupNumOfSpeakers"
-					class="popupNumOfSpeakers"
-					tabindex="0"
-				></div>
 				<div id="popup-close" class="popup-close" tabindex="0">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -228,7 +224,7 @@
 					text: "Number of Indigenous people able to speak an Indigenous language in 2021 and percentage change from 2016",
 					fontSize: 13,
 					fontStyle: "italic",
-					fill: am5.color(0x898989),
+					fill: am5.color(0xffffff),
 					x: am5.percent(50),
 					y: am5.percent(3),
 					centerX: am5.percent(50),
@@ -296,13 +292,14 @@
 				const popup = document.getElementById("popup");
 				const popupCategory = document.getElementById("popupCategory");
 				const popupPercentage = document.getElementById("popupPercentage");
-				const popupNumOfSpeakers =
-					document.getElementById("popupNumOfSpeakers");
+				const popupDescription = document.getElementById("popup-description");
 
 				// Set the content of the popup
-				popupCategory.textContent = `${category}`;
-				popupPercentage.textContent = ` ${percentage}%`;
-				popupNumOfSpeakers.textContent = `Number of Speakers: ${numOfSpeakers}`;
+				popupDescription.innerHTML = `<p>In 2021, there were <strong style="color:rgb(${langaugeColorR},${langaugeColorG},${langaugeColorB})
+					">${numOfSpeakers}</strong> speakers of the <strong style="color:rgb(${langaugeColorR},${langaugeColorG},${langaugeColorB})
+					";>${category}</strong> language in Canada. Since 2016, the number of speakers had changed by 
+					<strong style="color:rgb(${langaugeColorR},${langaugeColorG},${langaugeColorB})">${percentage}</strong>.</p>`;
+
 				currentActiveElement = document.activeElement;
 
 				// Check if ev.target.dom is defined before accessing it
@@ -316,7 +313,6 @@
 					// Position the popup using CSS transforms
 					popup.style.transform = `translate(${x}px, ${y}px)`;
 
-					popupPercentage.style.color = `rgb(${langaugeColorR},${langaugeColorG},${langaugeColorB})`;
 					// Set the display property before showing the popup
 					popup.style.display = "block";
 					popup.style.zIndex = "1000";
