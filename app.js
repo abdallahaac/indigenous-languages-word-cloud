@@ -472,7 +472,7 @@ var colorStops = [
 	{ color: "rgba(175, 187, 211, 1)", percentage: 15 },
 	{ color: "rgba(95, 117, 168, 1)", percentage: 20 },
 	{ color: "rgba(58, 117, 168, 1)", percentage: 35 },
-	{ color: "rgba(28, 42, 73, 1)", percentage: 40 },
+	{ color: "rgba(28, 42, 73, 1)", percentage: 160 },
 ];
 var isDragging = false;
 var isAnimating = false; // Flag to indicate animation
@@ -552,7 +552,7 @@ document.addEventListener("mousemove", (e) => {
 
 	// Calculate the percentage based on the specified range
 	var rangeMin = -40;
-	var rangeMax = 40;
+	var rangeMax = 160;
 	var adjustedWidth = scrollbarWidth - circleWidth;
 	var percentage = (newX / adjustedWidth) * (rangeMax - rangeMin) + rangeMin;
 
