@@ -94,7 +94,7 @@
 				font-family: Arial, Helvetica, sans-serif;
 				display: none;
 				z-index: 10;
-				background-color: rgba(255, 255, 255, 0.274);
+				background-color: rgb(255, 255, 255);
 
 				padding: 30px;
 				z-index: 1000;
@@ -108,20 +108,24 @@
 				border-radius: 6px;
 				box-shadow: #cccccc04 0px 3px 5px 5px;
 				padding: 50px 20px 50px 20px;
-				background-color: #f3eff7;
 			}
 
 			@media only screen and (min-width: 1600px) {
 				.popup {
-					transform: translateY(545px);
-					margin-left: 70px;
-					background-color: rgba(255, 255, 255, 0.274);
+					transform: translate(120%, 590px);
+					width: 500px;
+					height: 200px;
+
+					background-color: rgb(255, 255, 255);
 				}
 			}
 			@media only screen and (max-width: 1600px) {
 				.popup {
+					transform: translate(70%, 450px);
+					width: 500px;
+					height: 150px;
 					margin-left: 70px;
-					background-color: rgba(255, 255, 255, 0.274);
+					background-color: rgb(255, 255, 255);
 				}
 			}
 
@@ -137,10 +141,6 @@
 
 			.popup-category {
 				margin-bottom: 30px;
-			}
-			.popup > div,
-			span {
-				margin: 20px;
 			}
 
 			* {
@@ -170,15 +170,33 @@
 				<div id="scrollbar">
 					<div id="draggable-circle"></div>
 					<div class="scrollbar-labels">
-						<span class="scrollbar-label" tabindex="0">-40%</span>
-						<span class="scrollbar-label" tabindex="0">-30%</span>
-						<span class="scrollbar-label" tabindex="0">-20%</span>
-						<span class="scrollbar-label" tabindex="0">-10%</span>
-						<span class="scrollbar-label" tabindex="0">0%</span>
-						<span class="scrollbar-label" tabindex="0">10%</span>
-						<span class="scrollbar-label" tabindex="0">20%</span>
-						<span class="scrollbar-label" tabindex="0">30%</span>
-						<span class="scrollbar-label" tabindex="0">40%</span>
+						<span class="scrollbar-label" tabindex="0" data-percentage="-40%"
+							>-40%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="-30%"
+							>-30%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="-20%"
+							>-20%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="-10%"
+							>-10%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="-0%"
+							>0%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="10%"
+							>10%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="20%"
+							>20%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="30%"
+							>30%</span
+						>
+						<span class="scrollbar-label" tabindex="0" data-percentage="40%"
+							>40%</span
+						>
 					</div>
 				</div>
 			</div>
@@ -680,6 +698,7 @@
 				{ color: "rgba(28, 42, 73, 1)", percentage: 40 },
 			];
 			var isDragging = false;
+			var isAnimating = false; // Flag to indicate animation
 			var initialX;
 			var draggableCircle = document.getElementById("draggable-circle");
 			var scrollbar = document.getElementById("scrollbar");
@@ -698,52 +717,47 @@
 				}
 			}
 
-			// Function to handle keyboard events for the draggable circle
-			document.addEventListener("keydown", (e) => {
-				if (e.key === "Enter") {
-					// Calculate the percentage based on the specified range
-					var rangeMin = -40;
-					var rangeMax = 40;
+			// Function to handle label click
+			function handleLabelClick(event) {
+				// Extract the percentage from the clicked label's data attribute
+				var percentage = parseFloat(
+					event.target.getAttribute("data-percentage")
+				);
 
-					// Assuming you want to use the lastPercentage value for the Enter key
-					var newPercentage = lastPercentage;
-
-					console.log("Current Value: " + newPercentage.toFixed(2) + "%");
-					// Call the updateWordCloud function with the extracted percentage
-
+				if (!isNaN(percentage)) {
 					// Calculate the new position of the circle
 					var scrollbarWidth = scrollbar.clientWidth;
 					var circleWidth = draggableCircle.clientWidth;
 					var adjustedWidth = scrollbarWidth - circleWidth;
-					var newLeft =
-						((newPercentage - rangeMin) / (rangeMax - rangeMin)) *
-						adjustedWidth;
+					var newLeft = ((percentage + 40) / 80) * adjustedWidth;
+
+					// Set the animation flag to true
+					isAnimating = true;
+
+					// Temporarily remove the transition property
+					draggableCircle.style.transition = "none";
+
+					// Update the circle's position
 					draggableCircle.style.left = newLeft + "px";
-				}
-			});
 
-			// Function to handle label click or Enter keypress
-			function handleLabelClickOrEnter(event) {
-				// Get the text content of the clicked label (e.g., "-40%")
-				var labelValue = event.target.textContent.trim();
+					// Wait for a small time to ensure the position is updated before reapplying the transition
+					setTimeout(() => {
+						// Reapply the transition for smooth animation
+						draggableCircle.style.transition = "left 0.3s ease";
 
-				// Extract the percentage value (e.g., -40)
-				var percentage = parseFloat(labelValue);
+						// Set the animation flag back to false
+						isAnimating = false;
+					}, 10);
 
-				if (!isNaN(percentage)) {
-					// Call the updateWordCloud function with the extracted percentage
+					// Update the Word Cloud using the selected percentage
 					updateWordCloud(percentage);
 					lastPercentage = percentage; // Update the last percentage value
 				}
 			}
 
-			// Add event listeners to the scrollbar labels
+			// Add event listeners to the scrollbar labels for click events
 			scrollbarLabels.forEach(function (label) {
-				label.addEventListener("keydown", function (event) {
-					if (event.key === "Enter") {
-						handleLabelClickOrEnter(event);
-					}
-				});
+				label.addEventListener("click", handleLabelClick);
 			});
 
 			// Add event listeners for dragging the circle
@@ -772,17 +786,24 @@
 				// Ensure the percentage stays within the specified range
 				percentage = Math.max(rangeMin, Math.min(rangeMax, percentage));
 
-				// Calculate the new position of the circle
-				var newLeft =
-					((percentage - rangeMin) / (rangeMax - rangeMin)) * adjustedWidth;
-				draggableCircle.style.left = newLeft + "px";
+				// Temporarily remove the transition property if not animating
+				if (!isAnimating) {
+					draggableCircle.style.transition = "none";
+				}
+
+				// Update the circle's position
+
+				// Reapply the transition if not animating for smooth animation
+				if (!isAnimating) {
+					var newLeft =
+						((percentage - rangeMin) / (rangeMax - rangeMin)) * adjustedWidth;
+					draggableCircle.style.left = newLeft + "px";
+				}
 
 				// Update the Word Cloud when dragging is finished
 				document.addEventListener("mouseup", function mouseupListener() {
 					isDragging = false;
 					console.log("Current Value: " + lastPercentage.toFixed(2) + "%");
-
-					// Remove the mousemove and mouseup listeners
 				});
 
 				updateWordCloud(percentage); // Update the Word Cloud using the last selected percentage
