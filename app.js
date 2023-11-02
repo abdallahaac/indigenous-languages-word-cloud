@@ -461,6 +461,18 @@ series.data.setAll(data);
 var scrollbarLabels = document.querySelectorAll(".scrollbar-label");
 var draggableCircle = document.getElementById("draggable-circle");
 var scrollbar = document.getElementById("scrollbar");
+scrollbarLabels.forEach(function (label) {
+	label.addEventListener("click", () => {
+		console.log("clicked");
+	});
+
+	label.addEventListener("keydown", (event) => {
+		if (event.key === "Enter" || event.keyCode === 13) {
+			// Your code to handle the "Enter" key press goes here
+			handleLabelClick(event);
+		}
+	});
+});
 
 // Define the color stops and their corresponding percentages
 var colorStops = [
@@ -496,38 +508,86 @@ function updateWordCloud(percentage) {
 
 // Function to handle label click
 function handleLabelClick(event) {
+	function updateData(percentage) {
+		if (!isNaN(percentage)) {
+			// Calculate the new position of the circle
+			var scrollbarWidth = scrollbar.clientWidth;
+			var circleWidth = draggableCircle.clientWidth;
+			var adjustedWidth = scrollbarWidth - circleWidth;
+			var newLeft = ((percentage + 40) / 80) * adjustedWidth;
+
+			// Set the animation flag to true
+			isAnimating = true;
+
+			// Temporarily remove the transition property
+			draggableCircle.style.transition = "none";
+
+			// Update the circle's position
+			draggableCircle.style.left = newLeft + "px";
+
+			// Wait for a small time to ensure the position is updated before reapplying the transition
+			setTimeout(() => {
+				// Reapply the transition for smooth animation
+				draggableCircle.style.transition = "left 0.3s ease";
+
+				// Set the animation flag back to false
+				isAnimating = false;
+			}, 10);
+
+			// Update the Word Cloud using the selected percentage
+			updateWordCloud(percentage);
+			lastPercentage = percentage; // Update the last percentage value
+		}
+	}
+
 	// Extract the percentage from the clicked label's data attribute
 	var percentage = parseFloat(event.target.getAttribute("data-percentage"));
 
 	if (!isNaN(percentage)) {
-		// Calculate the new position of the circle
-		var scrollbarWidth = scrollbar.clientWidth;
-		var circleWidth = draggableCircle.clientWidth;
-		var adjustedWidth = scrollbarWidth - circleWidth;
-		var newLeft = ((percentage + 40) / 80) * adjustedWidth;
-
-		// Set the animation flag to true
-		isAnimating = true;
-
-		// Temporarily remove the transition property
-		draggableCircle.style.transition = "none";
-
-		// Update the circle's position
-		draggableCircle.style.left = newLeft + "px";
-
-		// Wait for a small time to ensure the position is updated before reapplying the transition
-		// setTimeout(() => {
-		// 	// Reapply the transition for smooth animation
-		// 	draggableCircle.style.transition = "left 0.3s ease";
-
-		// 	// Set the animation flag back to false
-		// 	isAnimating = false;
-		// }, 10);
-
-		// Update the Word Cloud using the selected percentage
-		updateWordCloud(percentage);
-		lastPercentage = percentage; // Update the last percentage value
+		updateData(percentage);
 	}
+	function handleLabelClick(event) {
+		function updateData(percentage) {
+			if (!isNaN(percentage)) {
+				// Calculate the new position of the circle
+				var scrollbarWidth = scrollbar.clientWidth;
+				var circleWidth = draggableCircle.clientWidth;
+				var adjustedWidth = scrollbarWidth - circleWidth;
+				var newLeft = ((percentage + 40) / 80) * adjustedWidth;
+
+				// Set the animation flag to true
+				isAnimating = true;
+
+				// Temporarily remove the transition property
+				draggableCircle.style.transition = "none";
+
+				// Update the circle's position
+				draggableCircle.style.left = newLeft + "px";
+
+				// Wait for a small time to ensure the position is updated before reapplying the transition
+				setTimeout(() => {
+					// Reapply the transition for smooth animation
+					draggableCircle.style.transition = "left 0.3s ease";
+
+					// Set the animation flag back to false
+					isAnimating = false;
+				}, 10);
+
+				// Update the Word Cloud using the selected percentage
+				updateWordCloud(percentage);
+				lastPercentage = percentage; // Update the last percentage value
+			}
+		}
+
+		// Extract the percentage from the clicked label's data attribute
+		var percentage = parseFloat(event.target.getAttribute("data-percentage"));
+
+		if (!isNaN(percentage)) {
+			updateData(percentage);
+		}
+	}
+
+	const scrollbarLabels = document.querySelectorAll(".scrollbar-label");
 }
 
 // Add event listeners to the scrollbar labels for click events

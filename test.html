@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<span class="mySpan" tabindex="0">test</span>
+		<span class="mySpan" tabindex="0">test</span>
+		<span class="mySpan" tabindex="0">test</span>
+		<span class="mySpan" tabindex="0">test</span>
+		<span class="mySpan" tabindex="0">test</span>
+		<span class="mySpan" tabindex="0">test</span>
+
+		<script>
+			const spans = document.querySelectorAll(".mySpan");
+
+			spans.forEach((span) => {
+				span.addEventListener("keydown", function (event) {
+					if (event.key === "Enter" || event.keyCode === 13) {
+						console.log("click");
+					}
+				});
+			});
+		</script>
+	</body>
+</html>
